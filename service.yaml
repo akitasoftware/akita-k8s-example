@@ -1,0 +1,63 @@
+# TODO: extract the secret declaration from file before code is made public
+apiVersion: v1
+kind: Secret
+metadata:
+  name: akita-secrets
+type: Opaque
+data:
+  api-key-id: YXBrXzNSb1RxeFcxN0lDTUl6Smh0YzRnYmU=
+  api-key-secret: OTQ0YjdmNDQyMTliMjkzMGNjMWM5YjEyNGNhYTM3YmY2NDA4YjE2YWFjNDFiYTYzMjkyNjkxMzIzNmE1NmM1ZQ==
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: akita-sidecar-example
+spec:
+  type: NodePort
+  selector:
+    app: akita-pod
+  ports:
+    - protocol: TCP
+      port: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app-with-sidecar
+  labels:
+    app: akita-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: akita-pod
+  template:
+    metadata:
+      labels:
+        app: akita-pod
+    spec:
+      containers:
+      - name: app
+        image: bfwaterdog/app-example
+        ports:
+        - containerPort: 5000
+      - name: akita
+        image: akitasoftware/cli:latest
+        env:
+          - name: AKITA_API_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: akita-secrets
+                key: api-key-id
+          - name: AKITA_API_KEY_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: akita-secrets
+                key: api-key-secret
+        args:
+          - learn
+          - --filter
+          - port 5000
+          - --service
+          - k8s-integration
+
