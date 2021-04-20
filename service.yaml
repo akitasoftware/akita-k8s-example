@@ -43,6 +43,11 @@ spec:
         - containerPort: 5000
       - name: akita
         image: akitasoftware/cli:latest
+        lifecycle:
+          # Pre-stop hooks: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#hook-handler-execution
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "AKITA_PID=$(pgrep akita) && kill -2 $AKITA_PID && tail -f /proc/$AKITA_PID/fd/1"]
         env:
           - name: AKITA_API_KEY_ID
             valueFrom:
