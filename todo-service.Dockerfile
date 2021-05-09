@@ -4,7 +4,7 @@ RUN groupadd --gid 1000 app \
     && useradd --uid 1000 --gid app --shell /bin/bash --create-home app
 WORKDIR /home/app
 COPY requirements.txt requirements.txt
-COPY src/app.py app.py
+COPY src/todo-service.py todo-service.py
 RUN pip install -r requirements.txt
 
 ENV FLASK_APP=todo-service.py
