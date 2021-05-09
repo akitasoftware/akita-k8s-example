@@ -4,10 +4,10 @@ RUN groupadd --gid 1000 app \
     && useradd --uid 1000 --gid app --shell /bin/bash --create-home app
 WORKDIR /home/app
 COPY requirements.txt requirements.txt
-COPY src/app.py app.py
+COPY src/statistics-service.py statistics-service.py
 RUN pip install -r requirements.txt
 
-ENV FLASK_APP=app.py
-EXPOSE 5000
+ENV FLASK_APP=statistics-service.py
+EXPOSE 5001
 USER app
-CMD flask run --host=0.0.0.0
+CMD flask run --host=0.0.0.0 --port 5001

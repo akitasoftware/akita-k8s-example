@@ -16,12 +16,14 @@ This example is comprised of a simple todo list application written in python. T
 
 TODO
 
-### Running the service
+### Running the Kubernetes service
 
 1 - Setup a Kubernetes cluster (you can use something like microk8s or minikube to run a cluster locally)
 2 - Run `kubectl apply -f service.yaml`
 3 - View the exposed port for the created service by running `kubectl get services`
 4 - Use curl, postman or any other tool to send requests to `http://localhost:{exposed-port}/todos`
+
+### Running locally
 
 ### Troubleshooting:
 
