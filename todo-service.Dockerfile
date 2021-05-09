@@ -7,7 +7,7 @@ COPY requirements.txt requirements.txt
 COPY src/app.py app.py
 RUN pip install -r requirements.txt
 
-ENV FLASK_APP=app.py
+ENV FLASK_APP=todo-service.py
 EXPOSE 5000
 USER app
 CMD flask run --host=0.0.0.0
