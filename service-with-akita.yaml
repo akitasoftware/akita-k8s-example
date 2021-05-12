@@ -1,3 +1,13 @@
+# TODO: extract the secret declaration from file before code is made public
+apiVersion: v1
+kind: Secret
+metadata:
+  name: akita-secrets
+type: Opaque
+data:
+  api-key-id: YXBrXzdnRlNjVXlRT1M0S2JRbjB4S20wMkc=
+  api-key-secret: ZThkMjU4NWEyODRmMWQyOGY0YWNhOWFkYmViNjNlYmVjMWI4ZTZkZjQ4ZTk2NmVmZmY1MDdmMTAxOWI5YmRjNg==
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -44,6 +54,30 @@ spec:
             name: todo-service-config
         ports:
         - containerPort: 5000
+      - name: akita
+        image: akitasoftware/cli:latest
+        lifecycle:
+          # Pre-stop hooks: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#hook-handler-execution
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "AKITA_PID=$(pgrep akita) && kill -2 $AKITA_PID && tail -f /proc/$AKITA_PID/fd/1"]
+        env:
+          - name: AKITA_API_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: akita-secrets
+                key: api-key-id
+          - name: AKITA_API_KEY_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: akita-secrets
+                key: api-key-secret
+        args:
+          - learn
+          - --filter
+          - port 5000
+          - --service
+          - k8s-integration
 ---
 apiVersion: v1
 kind: Service
