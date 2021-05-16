@@ -1,34 +1,63 @@
 # akita-k8s-example
 
-An example that illustrates how to run akita as a sidecar to an exiting application in order to be able to automatically generate API specifications without touching your application's code :)
+An example that illustrates how to run akita as a sidecar to an exiting application in order to be able to automatically infer API specifications without touching your application's code :)
 
-## What you are getting
+## What are you getting?
 
-This example is comprised of a simple todo list application written in python. The application exposes three endpoints:
+This example is comprised of two APIs (services) that collaborate to deliver todo list type application.
+
+The `todo-service`, stores the todo list items in Redis, and exposes the following endpoints:
 
 - GET /todos - returns a list of todos
 - POST /todos - creates a new todo. Expected body is an application/json with the following structure `{"name": "foo", "description": "bar"}`
 - DELETE /todos/{id} - deletes a specific item from the list
 
+This service also sends internal requests to the `statistics-service`, which exposes the following endpoints:
+
+- GET /stats - returns the current number of added and deleted todos
+- POST /stats - increments the added todo items counter
+- DELETE /stats - increments the removed todo items counter
+
+This example is a bit contrived, but it is designed to showcase how Akita can help you not only infer APIs but also understand the outgoing calls from a service.
+
 ## Getting started
 
 ### Setup akita
 
-TODO
+You can find detailed instructions specific for this example in this [post](https://www.akitasoftware.com/).
 
-### Running the Kubernetes service
+If you want to go solo, please make sure you have Akita setup, as you will need to provide the API Key ID and Secret as well as a service (see documentation [here](https://docs.akita.software/docs/get-started-with-superlearn))
 
-1 - Setup a Kubernetes cluster (you can use something like microk8s or minikube to run a cluster locally)
-2 - Run `kubectl apply -f service.yaml`
-3 - View the exposed port for the created service by running `kubectl get services`
-4 - Use curl, postman or any other tool to send requests to `http://localhost:{exposed-port}/todos`
+### Running in Kubernetes
 
-### Running locally
+#### Running just the services:
+
+You can run the services without Akita with the following steps:
+
+- Setup a Kubernetes cluster (you can use something like microk8s or minikube to run a cluster locally)
+- Run `kubectl apply -f service.yaml`
+- View the exposed port for the created service by running `kubectl get services`
+- Use curl, postman or any other tool to send requests to `http://localhost:30123/todos`
+
+#### Running Akita as a sidecar to the todo-service:
+
+Create a new Kubernetes secret to hold the Akita credentials:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: akita-secrets
+type: Opaque
+data:
+  api-key-id: # REPLACE WITH YOUR API KEY ID BASE 64 ENCODED
+  api-key-secret: # REPLACE WITH YOUR API KEY SECRET BASE 64 ENCODED
+```
+
+Save it on a file named: `akita-secrets.yaml` and run `kubectl apply -f akita-secrets.yaml`
+
+Run `kubectl apply -f service-with-akita.yaml` Note that the default service name being used is `k8s-integration`, so please ensure you have an Akita service with that name.
 
 ### Troubleshooting:
 
 - On microk8s you may have to enable DNS by running `microk8s enable dns` this may be required if your pod is not able to connect to the Internet
-
-## TODO:
-
-- Remove the secrets from the service.yaml
