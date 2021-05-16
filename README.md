@@ -30,6 +30,8 @@ If you want to go solo, please make sure you have Akita setup, as you will need 
 
 ### Running in Kubernetes
 
+The example already provides ready-to-use docker images for the services, so you can jump right to running the example.
+
 #### Running just the services:
 
 You can run the services without Akita with the following steps:
@@ -53,6 +55,8 @@ data:
   api-key-id: # REPLACE WITH YOUR API KEY ID BASE 64 ENCODED
   api-key-secret: # REPLACE WITH YOUR API KEY SECRET BASE 64 ENCODED
 ```
+
+Remember that the credentials are base64 encoded.
 
 Save it on a file named: `akita-secrets.yaml` and run `kubectl apply -f akita-secrets.yaml`
 
