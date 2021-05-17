@@ -12,13 +12,11 @@ def get_stats():
 
 @app.route('/stats', methods=["POST"])
 def todo_added():
-    print("ADDING")
     stats["num_todos_added"] = stats["num_todos_added"] + 1
     return stats
 
 
 @app.route('/stats', methods=["DELETE"])
 def todo_removed():
-    print("REMOVING")
     stats["num_todos_removed"] = stats["num_todos_removed"] + 1
     return stats
