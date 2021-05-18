@@ -24,7 +24,7 @@ This example is a bit contrived, but it is designed to showcase how Akita can he
 
 ### Setup akita
 
-You can find detailed instructions specific for this example in this [post](https://www.akitasoftware.com/).
+You can find detailed instructions specific for this example in this [post](https://www.akitasoftware.com/blog-posts/deep-dive-learning-about-your-api-behavior-on-k8s).
 
 If you want to go solo, please make sure you have Akita setup, as you will need to provide the API Key ID and Secret as well as a service (see documentation [here](https://docs.akita.software/docs/get-started-with-superlearn))
 
